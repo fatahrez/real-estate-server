@@ -19,6 +19,7 @@ flake8 = "*"
 black = "*"
 isort = "*"
 drf-yasg = "*"
+django-cors-headers = "*"
 
 [dev-packages]
 

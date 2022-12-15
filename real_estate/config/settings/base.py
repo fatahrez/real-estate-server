@@ -49,13 +49,30 @@ DJANGO_APPS = (
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.sites"
 )
 
-THIRD_PARTY_APPS = ()
+SITE_ID = 1
 
-LOCAL_APPS = ()
+THIRD_PARTY_APPS = (
+    "rest_framework",
+    "drf_yasg",
+    "rest_framework_simplejwt.token_blacklist",
+    "corsheaders",
+    "django_filters",
+    "django_countries",
+    "phonenumber_field"
+)
+
+LOCAL_APPS = (
+    "real_estate.apps.common",
+    "real_estate.apps.users",
+    "real_estate.apps.profiles",
+    "real_estate.apps.ratings"
+)
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
+
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
@@ -107,9 +124,13 @@ AUTHENTICATION_BACKENDS = (
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": BASE_DIR / "db.sqlite3",
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('DB_NAME'), 
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'), 
+        'PORT': env('DB_PORT'),
     }
 }
 # AUTH_USER_MODEL
