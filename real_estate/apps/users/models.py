@@ -11,13 +11,14 @@ from real_estate.apps.common.models import CommonFieldsMixin
 class User(AbstractUser, CommonFieldsMixin):
     """ Base class for all users """
     is_active = models.BooleanField(default=True)
-    is_verified = models.BooleanField(default=True)
+    is_verified = models.BooleanField(default=False)
 
     class Types(models.TextChoices):
         """ User Types """
         INDIVIDUAL = "INDIVIDUAL", "Individual"
         SELLER = "SELLER", "Seller"
         AGENT = "AGENT", "Agent"
+        PROJECTBUILDER = "PROJECTBUILDER", "ProjectBuilder"
         STAFFMEMBER = "STAFFMEMBER", "StaffMember"
         ADMIN = "ADMIN", "Admin"
 
@@ -57,6 +58,10 @@ class SellerManager(models.Manager):
 class AgentManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
         return super().get_queryset(*args, **kwargs).filter(type=User.Types.AGENT)
+
+class ProjectBuilderManager(models.Manager):
+    def get_queryset(self, *args, **kwargs):
+        return super().get_queryset(*args, **kwargs).filter(type=User.Types.PROJECTBUILDER)
 
 
 class StaffManager(models.Manager):
@@ -114,6 +119,21 @@ class Agent(User):
         proxy = True
         ordering = ['-created_at', '-updated_at']
 
+class ProjectBuilder(User):
+    """ Class to create ProjectBuilder & associated attributes """
+    base_type = User.Types.PROJECTBUILDER
+    objects = ProjectBuilderManager()
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            self.type = User.Types.PROJECTBUILDER
+            self.set_password(self.password)
+        return super().save(*args, **kwargs)
+
+    class Meta:
+        proxy = True
+        ordering = ['-created_at', '-updated_at']
+
 
 class StaffMember(User):
     """ Class to create StaffMember objects & associated attributes """
@@ -132,6 +152,7 @@ class StaffMember(User):
 
 
 @receiver(post_save, sender=StaffMember)
+@receiver(post_save, sender=ProjectBuilder)
 @receiver(post_save, sender=Agent)
 @receiver(post_save, sender=Seller)
 @receiver(post_save, sender=Individual)
@@ -142,6 +163,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 
 
 @receiver(post_save, sender=StaffMember)
+@receiver(post_save, sender=ProjectBuilder)
 @receiver(post_save, sender=Agent)
 @receiver(post_save, sender=Seller)
 @receiver(post_save, sender=Individual)

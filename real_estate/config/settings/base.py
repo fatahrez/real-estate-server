@@ -124,7 +124,7 @@ AUTHENTICATION_BACKENDS = (
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-# AUTH_USER_MODEL
+AUTH_USER_MODEL = 'users.User'
 
 
 # Password validation
