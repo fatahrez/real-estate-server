@@ -2,7 +2,8 @@ from rest_framework import generics, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from real_estate.apps.users.models import User
-from real_estate.apps.users.serializers import RegistrationSerializer
+from real_estate.apps.users.serializers import CustomTokenObtainPairSerializer, RegistrationSerializer
+from rest_framework_simplejwt.views import TokenObtainPairView
 
 class RegistrationAPIView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
@@ -39,4 +40,7 @@ class RegistrationAPIView(generics.CreateAPIView):
         return Response(res, status=res.get('status'))
 
 
-# class 
+class LoginAPIView(TokenObtainPairView):
+    permission_classes = [AllowAny]
+    serializer_class = CustomTokenObtainPairSerializer
+
