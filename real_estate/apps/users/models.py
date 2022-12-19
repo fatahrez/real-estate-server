@@ -30,7 +30,8 @@ class User(AbstractUser, CommonFieldsMixin):
     def save(self, *args, **kwargs):
         if not self.pk:
             self.type = self.base_type
-            return super().save(*args, kwargs)
+        
+        return super().save(*args, kwargs)
     
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']

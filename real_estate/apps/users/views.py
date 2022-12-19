@@ -141,7 +141,7 @@ class ResetPasswordView(APIView):
             if password == confirm_password:
                 user.set_password(password)
                 user.save()
-            
+
                 message = {
                     "message": "New password set"
                 }
