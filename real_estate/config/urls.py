@@ -20,4 +20,5 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path("realestateadmin/", admin.site.urls),
+    path("api/", include('real_estate.apps.users.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
