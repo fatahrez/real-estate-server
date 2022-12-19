@@ -6,7 +6,8 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .models import User, Individual, Seller, Agent, ProjectBuilder
+from .models import Agent, Individual, ProjectBuilder, Seller, User
+
 
 class RegistrationSerializer(serializers.ModelSerializer):
     class Roles(enum.Enum):

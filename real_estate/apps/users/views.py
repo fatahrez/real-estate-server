@@ -1,18 +1,19 @@
 from datetime import datetime, timedelta
 
-import jwt 
-
+import jwt
 from rest_framework import generics, status
 from rest_framework.generics import RetrieveUpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from real_estate.apps.common.utils import send_link
-
-from real_estate.apps.users.models import User
-from real_estate.apps.users.serializers import CustomTokenObtainPairSerializer, RegistrationSerializer, UserSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView
-from real_estate.config.settings.base import env, SIMPLE_JWT
+
+from real_estate.apps.common.utils import send_link
+from real_estate.apps.users.models import User
+from real_estate.apps.users.serializers import (
+    CustomTokenObtainPairSerializer, RegistrationSerializer, UserSerializer)
+from real_estate.config.settings.base import SIMPLE_JWT, env
+
 
 class RegistrationAPIView(generics.CreateAPIView):
     permission_classes = (AllowAny,)
