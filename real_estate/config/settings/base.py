@@ -11,9 +11,9 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from datetime import timedelta
-import environ
-
 from pathlib import Path
+
+import environ
 
 #Build path inside the project like this: BASE_DIR /'subdir'.
 from real_estate.config import settings
