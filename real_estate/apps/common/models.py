@@ -12,11 +12,11 @@ class CommonFieldsMixin(models.Model):
     """
     Contains Common fields for every model
     """
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
     deleted = models.BooleanField(default=True,
-                                help_text="This is for soft delete")
-    is_active = models.BooleanField(default=True)
+                                help_text="This is for soft delete", null=True)
+    is_active = models.BooleanField(default=True, null=True)
     # everything will be used to query deleted objects e.g. Model.everything.all()
     everything = models.Manager()
     objects = CustomManager()
