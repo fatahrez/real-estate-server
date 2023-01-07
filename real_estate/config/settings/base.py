@@ -16,8 +16,6 @@ from pathlib import Path
 import environ
 
 #Build path inside the project like this: BASE_DIR /'subdir'.
-from real_estate.config import settings
-
 BASE_DIR = environ.Path(__file__) - 4
 APPS_DIR = BASE_DIR.path('real_estate/apps')
 
@@ -163,6 +161,9 @@ EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD')
 EMAIL_HOST_USER = env('EMAIL_HOST_USER')
 EMAIL_PORT = env('EMAIL_PORT')
 EMAIL_USE_TLS = True
+DEFAULT_FROM_EMAIL = 'info@realestate.com'
+DOMAIN = env('BASE_URL')
+SITE_NAME = 'Real Estate'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/

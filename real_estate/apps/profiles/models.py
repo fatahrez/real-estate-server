@@ -14,7 +14,7 @@ class Gender(models.TextChoices):
     OTHER = "Other", _("Other")
 
     
-class Profile(CommonFieldsMixin):
+class Profile(models.Model):
     user = models.OneToOneField(User, related_name="profile", on_delete=models.CASCADE, null=True)
     phone_number = PhoneNumberField(verbose_name=_("Phone Number"), max_length=30, default="+254745678910")
     about_me = models.TextField(verbose_name=_("About Me"), default="say something about yourself...")
@@ -25,6 +25,9 @@ class Profile(CommonFieldsMixin):
     city = models.CharField(verbose_name=_("City"), max_length=180, default="Nairobi", blank=False, null=False)
     rating = models.DecimalField(max_digits=4, decimal_places=2, null=True, blank=True)
     num_reviews = models.IntegerField(verbose_name=_("Number of Reviews"), default=0, null=True, blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self) -> str:
         return f"{self.user.username}'s profile"

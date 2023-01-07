@@ -6,7 +6,7 @@ from real_estate.apps.common.models import CommonFieldsMixin
 from real_estate.apps.profiles.models import Profile
 
 # Create your models here.
-class Rating(CommonFieldsMixin):
+class Rating(models.Model):
     class Range(models.IntegerChoices):
         RATING_1 = 1, _("Poor")
         RATING_2 = 2, _("Fair")
@@ -16,7 +16,7 @@ class Rating(CommonFieldsMixin):
 
     rater = models.ForeignKey(AUTH_USER_MODEL, verbose_name=_("User Providing the rating"), on_delete=models.SET_NULL, null=True)
     agent = models.ForeignKey(
-        Agent, 
+        Profile, 
         verbose_name=_("Agent being rated"), 
         on_delete=models.SET_NULL, 
         related_name="agent_review",
@@ -24,6 +24,9 @@ class Rating(CommonFieldsMixin):
     rating = models.IntegerField(verbose_name=_("Rating"), choices=Range.choices, help_text="1=Poor, 2=Fair, 3=Good, 4=Very Good, 5=Excellent",
         default=0)
     comment = models.TextField(verbose_name=_("Comment"))
+
+    created_at = models.DateTimeField(auto_now_add=True, null=True)
+    updated_at = models.DateTimeField(auto_now=True, null=True)
 
     class Meta:
         unique_together = ["rater", "agent"]

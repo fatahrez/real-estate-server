@@ -38,6 +38,7 @@ schema_view = get_schema_view(
 urlpatterns = [
     path("realestateadmin/", admin.site.urls),
     path("api/", include('real_estate.apps.users.urls')),
+    path("api/", include("real_estate.apps.profiles.urls")),
 
     path('', schema_view.with_ui('swagger', cache_timeout=0), name="schema-swagger-ui"),
     path('docs/', schema_view.with_ui('redoc', cache_timeout=0), name="schema-redoc-ui")
