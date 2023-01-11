@@ -10,8 +10,10 @@ from .serializers import ProfileSerializer, UpdateProfileSerializer
 from real_estate.apps.users.models import Agent
 
 class AgentListAPIView(generics.ListAPIView):
-    permission_classes = [permissions.IsAuthenticated]
-    queryset = Agent.objects.all() 
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = []
+    for agent in Agent.objects.all():
+        queryset.append(Profile.objects.get(user=agent))
     serializer_class = ProfileSerializer
 
 

@@ -67,7 +67,9 @@ LOCAL_APPS = (
     "real_estate.apps.common",
     "real_estate.apps.users",
     "real_estate.apps.profiles",
-    "real_estate.apps.ratings"
+    "real_estate.apps.ratings",
+    "real_estate.apps.properties",
+    "real_estate.apps.enquiries"
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
