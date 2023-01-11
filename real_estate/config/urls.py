@@ -40,7 +40,13 @@ urlpatterns = [
     path("api/", include('real_estate.apps.users.urls')),
     path("api/", include("real_estate.apps.profiles.urls")),
     path("api/", include("real_estate.apps.properties.urls")),
+    path("api/", include("real_estate.apps.ratings.urls")),
+    path("api/", include("real_estate.apps.enquiries.urls")),
 
     path('', schema_view.with_ui('swagger', cache_timeout=0), name="schema-swagger-ui"),
     path('docs/', schema_view.with_ui('redoc', cache_timeout=0), name="schema-redoc-ui")
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+admin.site.site_header = "Real Estate Admin"
+admin.site.site_title = "Real Estate Admin Portal"
+admin.site.index_title = "Welcome to the Real Estate Portal"
