@@ -2,19 +2,20 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from real_estate.apps.users.models import Agent
+
 from .exceptions import NotYourProfile, ProfileNotFound
 from .models import Profile
 from .renderers import ProfileJSONRenderer
 from .serializers import ProfileSerializer, UpdateProfileSerializer
 
-from real_estate.apps.users.models import Agent
 
 class AgentListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    # queryset = []
-    # for agent in Agent.objects.all():
-    #     queryset.append(Profile.objects.get(user=agent))
-    # serializer_class = ProfileSerializer
+    queryset = []
+    for agent in Agent.objects.all():
+        queryset.append(Profile.objects.get(user=agent))
+    serializer_class = ProfileSerializer
 
 
 class GetProfileAPIView(APIView):
@@ -39,13 +40,15 @@ class UpdateProfileAPIView(APIView):
             Profile.objects.get(user__username=username)
         except Profile.DoesNotExist:
             raise ProfileNotFound
-        
+
         user_name = request.user.username
         if user_name != username:
             raise NotYourProfile
-        
+
         data = request.data
-        serializer = UpdateProfileSerializer(instance=request.user.profile, data = data, partial=True)
+        serializer = UpdateProfileSerializer(
+            instance=request.user.profile, data=data, partial=True
+        )
 
         serializer.is_valid()
         serializer.save()

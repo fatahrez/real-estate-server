@@ -9,6 +9,7 @@ from .models import Rating
 
 User = get_user_model()
 
+
 @api_view(["POST"])
 @permission_classes([permissions.IsAuthenticated])
 def create_agent_review(request, profile_id):
@@ -19,25 +20,25 @@ def create_agent_review(request, profile_id):
     if profile_user.email == request.user.email:
         formatted_response = {"message": "You can't rate yourself"}
         return Response(formatted_response, status=status.HTTP_403_FORBIDDEN)
-    
+
     alreadyExists = agent_profile.agent_review.filter(
-        agent__id = profile_user.id
+        agent__id=profile_user.id
     ).exists()
 
     if alreadyExists:
         formatted_response = {"detail": "Profile already reviewed"}
         return Response(formatted_response, status=status.HTTP_400_BAD_REQUEST)
-    
+
     elif data["rating"] == 0:
         formatted_response = {"detail": "Please select a rating"}
         return Response(formatted_response, status=status.HTTP_400_BAD_REQUEST)
-    
+
     else:
         review = Rating.objects.create(
-            rater = request.user,
-            agent = agent_profile,
-            rating = data["rating"],
-            comment = data["comment"],
+            rater=request.user,
+            agent=agent_profile,
+            rating=data["rating"],
+            comment=data["comment"],
         )
         reviews = agent_profile.agent_review.all()
         agent_profile.num_reviews = len(reviews)
@@ -45,7 +46,7 @@ def create_agent_review(request, profile_id):
         total = 0
         for i in reviews:
             total += i.rating
-        
+
         agent_profile.rating = round(total / len(reviews), 2)
         agent_profile.save()
         return Response("Review Added")
