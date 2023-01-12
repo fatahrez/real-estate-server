@@ -10,12 +10,14 @@ from real_estate.apps.common.models import CommonFieldsMixin
 
 # Create your models here.
 class User(AbstractUser, CommonFieldsMixin):
-    """ Base class for all users """
+    """Base class for all users"""
+
     is_active = models.BooleanField(default=True)
     is_verified = models.BooleanField(default=False)
 
     class Types(models.TextChoices):
-        """ User Types """
+        """User Types"""
+
         INDIVIDUAL = "INDIVIDUAL", "Individual"
         SELLER = "SELLER", "Seller"
         AGENT = "AGENT", "Agent"
@@ -24,24 +26,23 @@ class User(AbstractUser, CommonFieldsMixin):
         ADMIN = "ADMIN", "Admin"
 
     base_type = Types.ADMIN
-    type = models.CharField(_("Type"), max_length=50, choices=Types.choices, default=base_type)
+    type = models.CharField(
+        _("Type"), max_length=50, choices=Types.choices, default=base_type
+    )
     email = models.CharField(_("email of User"), unique=True, max_length=255)
 
     def save(self, *args, **kwargs):
         if not self.pk:
             self.type = self.base_type
-        
+
         return super().save(*args, **kwargs)
-    
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = ["username"]
 
     def tokens(self):
         refresh = RefreshToken.for_user(self)
-        return {
-            'refresh': str(refresh),
-            'access': str(refresh.access_token)
-        }
+        return {"refresh": str(refresh), "access": str(refresh.access_token)}
 
 
 """ ========================= Proxy Model Managers =================== """
@@ -61,9 +62,12 @@ class AgentManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
         return super().get_queryset(*args, **kwargs).filter(type=User.Types.AGENT)
 
+
 class ProjectBuilderManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
-        return super().get_queryset(*args, **kwargs).filter(type=User.Types.PROJECTBUILDER)
+        return (
+            super().get_queryset(*args, **kwargs).filter(type=User.Types.PROJECTBUILDER)
+        )
 
 
 class StaffManager(models.Manager):
@@ -75,7 +79,8 @@ class StaffManager(models.Manager):
 
 
 class Individual(User):
-    """Class to create Individual Object & Associated attributes """
+    """Class to create Individual Object & Associated attributes"""
+
     base_type = User.Types.INDIVIDUAL
     objects = IndividualManager()
 
@@ -87,11 +92,12 @@ class Individual(User):
 
     class Meta:
         proxy = True
-        ordering = ['-created_at', '-updated_at']
+        ordering = ["-created_at", "-updated_at"]
 
 
 class Seller(User):
-    """ class to create Seller object & associated attributes """
+    """class to create Seller object & associated attributes"""
+
     base_type = User.Types.SELLER
     objects = SellerManager()
 
@@ -103,11 +109,12 @@ class Seller(User):
 
     class Meta:
         proxy = True
-        ordering = ['-created_at', '-updated_at']
+        ordering = ["-created_at", "-updated_at"]
 
 
 class Agent(User):
-    """ Class to create Agent object & associated attributes """
+    """Class to create Agent object & associated attributes"""
+
     base_type = User.Types.AGENT
     objects = AgentManager()
 
@@ -119,10 +126,12 @@ class Agent(User):
 
     class Meta:
         proxy = True
-        ordering = ['-created_at', '-updated_at']
+        ordering = ["-created_at", "-updated_at"]
+
 
 class ProjectBuilder(User):
-    """ Class to create ProjectBuilder & associated attributes """
+    """Class to create ProjectBuilder & associated attributes"""
+
     base_type = User.Types.PROJECTBUILDER
     objects = ProjectBuilderManager()
 
@@ -134,11 +143,12 @@ class ProjectBuilder(User):
 
     class Meta:
         proxy = True
-        ordering = ['-created_at', '-updated_at']
+        ordering = ["-created_at", "-updated_at"]
 
 
 class StaffMember(User):
-    """ Class to create StaffMember objects & associated attributes """
+    """Class to create StaffMember objects & associated attributes"""
+
     base_type = User.Types.STAFFMEMBER
     objects = StaffManager()
 
@@ -150,7 +160,7 @@ class StaffMember(User):
 
     class Meta:
         proxy = True
-        ordering = ['-created_at', '-updated_at']
+        ordering = ["-created_at", "-updated_at"]
 
 
 @receiver(post_save, sender=StaffMember)
@@ -160,6 +170,7 @@ class StaffMember(User):
 @receiver(post_save, sender=Individual)
 def create_user_profile(sender, instance, created, **kwargs):
     from real_estate.apps.profiles.models import Profile
+
     if created:
         Profile.objects.create(user=instance)
 
@@ -170,4 +181,4 @@ def create_user_profile(sender, instance, created, **kwargs):
 @receiver(post_save, sender=Seller)
 @receiver(post_save, sender=Individual)
 def create_user_profile(sender, instance, **kwargs):
-    instance.profile.save()    
+    instance.profile.save()

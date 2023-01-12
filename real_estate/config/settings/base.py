@@ -15,29 +15,29 @@ from pathlib import Path
 
 import environ
 
-#Build path inside the project like this: BASE_DIR /'subdir'.
+# Build path inside the project like this: BASE_DIR /'subdir'.
 BASE_DIR = environ.Path(__file__) - 4
-APPS_DIR = BASE_DIR.path('real_estate/apps')
+APPS_DIR = BASE_DIR.path("real_estate/apps")
 
 env = environ.Env(
     # set casting, default value
     DJANGO_READ_DOT_ENV_FILE=False
 )
-READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', False)
+READ_DOT_ENV_FILE = env.bool("DJANGO_READ_DOT_ENV_FILE", False)
 if READ_DOT_ENV_FILE:
-    env_file = str(BASE_DIR.path('.env'))
-    print('Loading : {}'.format(env_file))
+    env_file = str(BASE_DIR.path(".env"))
+    print("Loading : {}".format(env_file))
     env.read_env(env_file)
-    print('The .env file has been loaded. See base.py for more information.')
+    print("The .env file has been loaded. See base.py for more information.")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env.bool('DJANGO_DEBUG', False)
+DEBUG = env.bool("DJANGO_DEBUG", False)
 
 # Application definition
 
@@ -48,7 +48,7 @@ DJANGO_APPS = (
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.sites"
+    "django.contrib.sites",
 )
 
 SITE_ID = 1
@@ -60,7 +60,7 @@ THIRD_PARTY_APPS = (
     "corsheaders",
     "django_filters",
     "django_countries",
-    "phonenumber_field"
+    "phonenumber_field",
 )
 
 LOCAL_APPS = (
@@ -69,7 +69,7 @@ LOCAL_APPS = (
     "real_estate.apps.profiles",
     "real_estate.apps.ratings",
     "real_estate.apps.properties",
-    "real_estate.apps.enquiries"
+    "real_estate.apps.enquiries",
 )
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -77,17 +77,15 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }
 
 
 MIDDLEWARE = [
-    'corsheaders.middleware.CorsMiddleware',
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -117,14 +115,12 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "real_estate.config.wsgi.application"
 
-AUTHENTICATION_BACKENDS = (
-    'django.contrib.auth.backends.ModelBackend',
-)
+AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
-AUTH_USER_MODEL = 'users.User'
+AUTH_USER_MODEL = "users.User"
 
 
 # Password validation
@@ -157,15 +153,15 @@ USE_I18N = True
 
 USE_TZ = True
 
-EMAIL_BACKEND = env('EMAIL_BACKEND')
-EMAIL_HOST = env('EMAIL_HOST')
-EMAIL_HOST_PASSWORD = env('EMAIL_PASSWORD')
-EMAIL_HOST_USER = env('EMAIL_HOST_USER')
-EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_BACKEND = env("EMAIL_BACKEND")
+EMAIL_HOST = env("EMAIL_HOST")
+EMAIL_HOST_PASSWORD = env("EMAIL_PASSWORD")
+EMAIL_HOST_USER = env("EMAIL_HOST_USER")
+EMAIL_PORT = env("EMAIL_PORT")
 EMAIL_USE_TLS = True
-DEFAULT_FROM_EMAIL = 'info@realestate.com'
-DOMAIN = env('BASE_URL')
-SITE_NAME = 'Real Estate'
+DEFAULT_FROM_EMAIL = "info@realestate.com"
+DOMAIN = env("BASE_URL")
+SITE_NAME = "Real Estate"
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
@@ -183,29 +179,24 @@ MEDIA_ROOT = BASE_DIR.path("mediafiles")
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=200),
-    'ROTATE_REFRESH_TOKENS': False,
-    'BLACKLIST_AFTER_ROTATION': True,
-
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
-    'AUDIENCE': None,
-    'ISSUER': None,
-
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
-    'TOKEN_TYPE_CLAIM': 'token_type',
-
-    'JTI_CLAIM': 'jti',
-
-    'SLIDING_TOKEN_REFRESH_EXP_CLAIM': 'refresh_exp',
-    'SLIDING_TOKEN_LIFETIME': timedelta(minutes=5),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=1),
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=200),
+    "ROTATE_REFRESH_TOKENS": False,
+    "BLACKLIST_AFTER_ROTATION": True,
+    "ALGORITHM": "HS256",
+    "SIGNING_KEY": SECRET_KEY,
+    "VERIFYING_KEY": None,
+    "AUDIENCE": None,
+    "ISSUER": None,
+    "AUTH_HEADER_TYPES": ("Bearer",),
+    "USER_ID_FIELD": "id",
+    "USER_ID_CLAIM": "user_id",
+    "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+    "TOKEN_TYPE_CLAIM": "token_type",
+    "JTI_CLAIM": "jti",
+    "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
+    "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
+    "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
 }
 
 import logging
@@ -217,36 +208,34 @@ logger = logging.getLogger(__name__)
 
 LOG_LEVEL = "INFO"
 
-logging.config.dictConfig({
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters":{
-        "console":{
-            "format":"%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+logging.config.dictConfig(
+    {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "formatters": {
+            "console": {
+                "format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s",
+            },
+            "file": {"format": "%(asctime)s %(name)-12s %(levelname)-8s %(message)s"},
+            "django.server": DEFAULT_LOGGING["formatters"]["django.server"],
         },
-        "file":{"format":"%(asctime)s %(name)-12s %(levelname)-8s %(message)s"},
-        "django.server":DEFAULT_LOGGING["formatters"]["django.server"],
-    },
-    "handlers":{
-        "console":{
-            "class":"logging.StreamHandler",
-            "formatter":"console",
+        "handlers": {
+            "console": {
+                "class": "logging.StreamHandler",
+                "formatter": "console",
+            },
+            "file": {
+                "level": "INFO",
+                "class": "logging.FileHandler",
+                "formatter": "file",
+                "filename": "logs/real_estate.log",
+            },
+            "django.server": DEFAULT_LOGGING["handlers"]["django.server"],
         },
-        "file":{
-            "level":"INFO",
-            "class":"logging.FileHandler",
-            "formatter":"file",
-            "filename":"logs/real_estate.log",
+        "loggers": {
+            "": {"level": "INFO", "handlers": ["console", "file"], "propagate": False},
+            "apps": {"level": "INFO", "handlers": ["console"], "propagate": False},
+            "django.server": DEFAULT_LOGGING["loggers"]["django.server"],
         },
-        "django.server":DEFAULT_LOGGING["handlers"]["django.server"],
-    },
-    "loggers":{
-        "":{
-            "level": "INFO", "handlers":["console","file"], "propagate":False
-        },
-        "apps":{
-            "level": "INFO", "handlers":["console"],"propagate":False
-        },
-        "django.server":DEFAULT_LOGGING["loggers"]["django.server"],
-    },
-})
+    }
+)

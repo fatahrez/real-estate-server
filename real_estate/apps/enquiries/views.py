@@ -7,6 +7,7 @@ from real_estate.config.settings.base import DEFAULT_FROM_EMAIL
 
 from .models import Enquiry
 
+
 @api_view(["POST"])
 @permission_classes([permissions.AllowAny])
 def send_enquiry_email(request):
@@ -26,7 +27,6 @@ def send_enquiry_email(request):
         enquiry.save()
 
         return Response({"success": "Your Enquiry was successfully submitted"})
-        
+
     except:
         return Response({"fail": "Enquiry was not sent. Please try again"})
-

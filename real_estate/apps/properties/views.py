@@ -1,7 +1,6 @@
 import logging
 
 import django_filters
-from django.db.models import query
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics, permissions, status
 from rest_framework.decorators import api_view, permission_classes
@@ -12,7 +11,7 @@ from .exceptions import PropertyNotFound
 from .models import Property, PropertyViews
 from .pagination import PropertyPagination
 from .serializers import (PropertyCreateSerializer, PropertySerializer,
-                        PropertyViewSerializer)
+                          PropertyViewSerializer)
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +42,7 @@ class ListAllPropertiesAPIView(generics.ListAPIView):
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter,
-        filters.OrderingFilter
+        filters.OrderingFilter,
     ]
 
     filterset_class = PropertyFilter
@@ -89,7 +88,7 @@ class PropertyDetailView(APIView):
 
             property.views += 1
             property.save()
-        
+
         serializer = PropertySerializer(property, context={"request": request})
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -102,12 +101,12 @@ def update_property_api_view(request, slug):
         property = Property.objects.get(slug=slug)
     except Property.DoesNotExist:
         raise PropertyNotFound
-    
+
     user = request.user
     if property.user != user:
         return Response(
             {"error": "You can't update or edit a property that doesn't belong to you"},
-            status=status.HTTP_403_FORBIDDEN
+            status=status.HTTP_403_FORBIDDEN,
         )
     if request.method == "PUT":
         data = request.data
@@ -142,14 +141,14 @@ def delete_property_api_view(request, slug):
         property = Property.objects.get(slug=slug)
     except Property.DoesNotExist:
         raise PropertyNotFound
-    
+
     user = request.user
     if property.user != user:
         return Response(
             {"error": "You can't delete a property that doesn't belong to you"},
             status=status.HTTP_403_FORBIDDEN,
         )
-    
+
     if request.method == "DELETE":
         delete_operation = property.delete()
         data = {}
@@ -204,10 +203,10 @@ class PropertySearchAPIView(APIView):
             price = 600000
         elif price == "Any":
             price = -1
-        
+
         if price != -1:
             queryset = queryset.filter(price__gte=price)
-        
+
         bedrooms = data["bedrooms"]
         if bedrooms == "0+":
             bedrooms = 0
@@ -221,7 +220,7 @@ class PropertySearchAPIView(APIView):
             bedrooms = 4
         elif bedrooms == "5+":
             bedrooms = 5
-        
+
         queryset = queryset.filter(bedrooms__gte=bedrooms)
 
         bathrooms = data["bathrooms"]
@@ -244,4 +243,3 @@ class PropertySearchAPIView(APIView):
         serializer = PropertySerializer(queryset, many=True)
 
         return Response(serializer.data)
-        

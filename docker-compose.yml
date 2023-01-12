@@ -10,14 +10,15 @@ services:
             - .:/app
             - static_volume:/app/staticfiles
             - media_volume:/app/mediafiles
-        ports:
-            - "8000:8000"
+        # ports:
+        #     - "8000:8000"
         env_file:
             - .env
         depends_on:
             - postgres-db
         networks:
             - real-estate
+
     postgres-db:
       image: postgres:12.0-alpine
       ports:
@@ -30,6 +31,21 @@ services:
           - POSTGRES_DB=${DB_NAME}
       networks:
           - real-estate
+    
+    nginx:
+        restart: always
+        depends_on:
+            - api
+        volumes:
+            - static_volume:/app/staticfiles
+            - media_volume:/app/mediafiles
+        build: 
+            context: ./docker/local/nginx
+            dockerfile: Dockerfile
+        ports:
+          - "80:80"
+        networks:
+            - real-estate
 
 networks:
   real-estate:

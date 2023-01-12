@@ -2,7 +2,6 @@ from django_countries.serializer_fields import CountryField
 from rest_framework import serializers
 
 from real_estate.apps.ratings.serializers import RatingSerializer
-from real_estate.apps.users.models import Agent
 
 from .models import Profile
 
@@ -30,7 +29,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "city",
             "rating",
             "num_reviews",
-            "reviews"
+            "reviews",
         ]
 
     def get_reviews(self, obj):
@@ -51,6 +50,5 @@ class UpdateProfileSerializer(serializers.ModelSerializer):
             "license",
             "gender",
             "country",
-            "city"
+            "city",
         ]
-
