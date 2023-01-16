@@ -36,6 +36,7 @@ class PropertyFilter(django_filters.FilterSet):
 
 
 class ListAllPropertiesAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = PropertySerializer
     queryset = Property.objects.all().order_by("-created_at")
     pagination_class = PropertyPagination
