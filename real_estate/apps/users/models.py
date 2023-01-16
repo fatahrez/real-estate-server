@@ -163,11 +163,12 @@ class StaffMember(User):
         ordering = ["-created_at", "-updated_at"]
 
 
-@receiver(post_save, sender=StaffMember)
-@receiver(post_save, sender=ProjectBuilder)
-@receiver(post_save, sender=Agent)
-@receiver(post_save, sender=Seller)
-@receiver(post_save, sender=Individual)
+# @receiver(post_save, sender=StaffMember)
+# @receiver(post_save, sender=ProjectBuilder)
+# @receiver(post_save, sender=Agent)
+# @receiver(post_save, sender=Seller)
+# @receiver(post_save, sender=Individual)
+@receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     from real_estate.apps.profiles.models import Profile
 
@@ -175,10 +176,11 @@ def create_user_profile(sender, instance, created, **kwargs):
         Profile.objects.create(user=instance)
 
 
-@receiver(post_save, sender=StaffMember)
-@receiver(post_save, sender=ProjectBuilder)
-@receiver(post_save, sender=Agent)
-@receiver(post_save, sender=Seller)
-@receiver(post_save, sender=Individual)
+# @receiver(post_save, sender=StaffMember)
+# @receiver(post_save, sender=ProjectBuilder)
+# @receiver(post_save, sender=Agent)
+# @receiver(post_save, sender=Seller)
+# @receiver(post_save, sender=Individual)
+@receiver(post_save, sender=User)
 def create_user_profile(sender, instance, **kwargs):
     instance.profile.save()
