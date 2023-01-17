@@ -65,7 +65,7 @@ class ListAgentsPropertiesAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Property.objects.filter(user=user).order_by("-created-at")
+        queryset = Property.objects.filter(user=user).order_by("-created_at")
         return queryset
 
 
