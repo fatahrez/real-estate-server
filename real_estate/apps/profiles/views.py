@@ -11,12 +11,9 @@ from .serializers import ProfileSerializer, UpdateProfileSerializer
 
 
 class AgentListAPIView(generics.ListAPIView):
-    pass
-    # permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    # queryset = []
-    # for agent in Agent.objects.all():
-    #     queryset.append(Profile.objects.get(user=agent))
-    # serializer_class = ProfileSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = Agent.objects.all()
+    serializer_class = ProfileSerializer
 
 
 class GetProfileAPIView(APIView):
