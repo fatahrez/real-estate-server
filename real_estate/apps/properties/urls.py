@@ -5,7 +5,7 @@ from . import views
 urlpatterns = [
     path(
         "properties/all/",
-        views.ListAgentsPropertiesAPIView.as_view(),
+        views.ListAllPropertiesAPIView.as_view(),
         name="all-properties",
     ),
     path(
