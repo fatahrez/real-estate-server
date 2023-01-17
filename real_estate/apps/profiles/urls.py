@@ -9,5 +9,5 @@ urlpatterns = [
         UpdateProfileAPIView.as_view(),
         name="update_profile",
     ),
-    path("profile/agents/all/", AgentListAPIView.as_view(), name="all-agents"),
+    # path("profile/agents/all/", AgentListAPIView.as_view(), name="all-agents"),
 ]
