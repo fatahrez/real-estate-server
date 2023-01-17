@@ -6,7 +6,7 @@ from .models import Property, PropertyViews
 
 
 class PropertySerializer(serializers.ModelSerializer):
-    user = serializers.SerializerMethodField()
+    # user = serializers.SerializerMethodField()
     country = CountryField(name_only=True)
     cover_photo = serializers.SerializerMethodField()
     profile_photo = serializers.SerializerMethodField()
@@ -46,8 +46,8 @@ class PropertySerializer(serializers.ModelSerializer):
             "views",
         ]
 
-    def get_user(self, obj):
-        return obj.user.username
+    # def get_user(self, obj):
+    #     return obj.user.username
 
     def get_cover_photo(self, obj):
         return obj.cover_photo.url
