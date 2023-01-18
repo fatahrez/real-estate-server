@@ -75,6 +75,7 @@ class PropertyViewsAPIView(generics.ListAPIView):
 
 
 class PropertyDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     def get(self, request, slug):
         property = Property.objects.get(slug=slug)
 
