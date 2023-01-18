@@ -69,7 +69,7 @@ class Property(CommonFieldsMixin):
         default=112,
     )
     price = models.DecimalField(
-        verbose_name=_("Price"), max_digits=8, decimal_places=2, default=0.0
+        verbose_name=_("Price"), max_digits=10, decimal_places=2, default=0.0
     )
     plot_area = models.DecimalField(
         verbose_name=_("Plot Area(m^2)"), max_digits=8, decimal_places=2, default=0.0
