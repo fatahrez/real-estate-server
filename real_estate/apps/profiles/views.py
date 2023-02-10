@@ -7,7 +7,7 @@ from real_estate.apps.users.models import Agent, User
 from .exceptions import NotYourProfile, ProfileNotFound
 from .models import Profile
 from .renderers import ProfileJSONRenderer
-from .serializers import AgentSerializer, ProfileSerializer, UpdateProfileSerializer
+from .serializers import ProfileSerializer, UpdateProfileSerializer
 
 
 class AgentListAPIView(generics.ListAPIView):
