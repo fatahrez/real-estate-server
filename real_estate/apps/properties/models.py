@@ -136,3 +136,29 @@ class PropertyViews(CommonFieldsMixin):
     class Meta:
         verbose_name = "Total Views on Property"
         verbose_name_plural = "Total Property Views"
+
+class NewProject(CommonFieldsMixin):
+    name = models.CharField(max_length=255)
+    location = models.CharField(max_length=255)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=12, decimal_places=2)
+    bedrooms = models.PositiveIntegerField()
+    bathrooms = models.PositiveIntegerField()
+    square_feet = models.PositiveIntegerField()
+    is_published = models.BooleanField(default=True)
+    construction_status = models.CharField(
+        max_length=255,
+        choices=(
+            ('Not Started', 'Not Started'),
+            ('Under Construction', 'Under Construction'),
+            ('Completed', 'Completed'),
+        ),
+        default='Not Started'
+    )
+    completion_date = models.DateField(null=True, blank=True)
+    
+    objects = models.Manager()
+    published = PropertyPublishedManager()
+
+    def __str__(self):
+        return self.name
