@@ -1,8 +1,9 @@
+from cgitb import lookup
 from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from real_estate.apps.users.models import Agent, User
+from real_estate.apps.users.models import User
 
 from .exceptions import NotYourProfile, ProfileNotFound
 from .models import Profile
@@ -18,6 +19,12 @@ class AgentListAPIView(generics.ListAPIView):
         user_ids = User.objects.filter(type='AGENT').values_list('id', flat=True)
         return Profile.objects.filter(user__in=user_ids)
 
+
+class AgentRetrieveAPIView(generics.RetrieveAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = ProfileSerializer
+    queryset = Profile.objects.all()
+    lookup_field = 'id'
 
 
 class GetProfileAPIView(APIView):
