@@ -2,18 +2,22 @@ from rest_framework import generics, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from real_estate.apps.users.models import Agent
+from real_estate.apps.users.models import Agent, User
 
 from .exceptions import NotYourProfile, ProfileNotFound
 from .models import Profile
 from .renderers import ProfileJSONRenderer
-from .serializers import ProfileSerializer, UpdateProfileSerializer
+from .serializers import AgentSerializer, ProfileSerializer, UpdateProfileSerializer
 
 
 class AgentListAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    queryset = Agent.objects.all()
     serializer_class = ProfileSerializer
+
+    def get_queryset(self):
+        user_ids = User.objects.filter(type='AGENT').values_list('id', flat=True)
+        return Profile.objects.filter(user__in=user_ids)
+
 
 
 class GetProfileAPIView(APIView):

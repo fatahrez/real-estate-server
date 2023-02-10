@@ -4,6 +4,8 @@ from rest_framework import serializers
 from real_estate.apps.ratings.serializers import RatingSerializer
 
 from .models import Profile
+from real_estate.apps.users.models import Agent
+
 
 
 class ProfileSerializer(serializers.ModelSerializer):
