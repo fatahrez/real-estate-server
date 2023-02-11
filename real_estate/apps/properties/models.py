@@ -203,6 +203,14 @@ class NewProject(CommonFieldsMixin):
     objects = models.Manager()
     published = PropertyPublishedManager()
 
+    def save(self, *args, **kwargs):
+        self.name = str.title(self.name)
+        self.description = str.capitalize(self.description)
+        self.ref_code = "".join(
+            random.choices(string.ascii_uppercase + string.digits, k=10)
+        )
+        super(NewProject, self).save(*args, **kwargs)
+
     def __str__(self):
         return self.name
 
