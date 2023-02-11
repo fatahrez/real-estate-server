@@ -1,3 +1,4 @@
+from unicodedata import name
 from django.urls import path
 
 from . import views
@@ -33,5 +34,25 @@ urlpatterns = [
         "properties/search/",
         views.PropertySearchAPIView.as_view(),
         name="property-search",
+    ),
+    path(
+        "properties/new_projects/all/",
+        views.ListAllNewProjectsAPIView.as_view(),
+        name="all-new-projects"
+    ),
+    path(
+        "properties/new_projects/details/<slug:slug>/",
+        views.NewProjectDetailView.as_view(),
+        name="new-project-details"
+    ),
+    path(
+        "properties/new_projects/update/<slug:slug>/",
+        views.update_new_project_api_view,
+        name="update-new-project",
+    ),
+    path(
+        "properties/new_projects/delete/<slug:slug>/",
+        views.delete_new_project_api_view,
+        name="delete-new-project"
     ),
 ]
