@@ -153,11 +153,11 @@ class NewProject(CommonFieldsMixin):
     user = models.ForeignKey(
         User,
         verbose_name=_("Agent, Seller, Buyer or Project Builder"),
-        related_name="agent_buyer",
+        related_name="project_builder",
         on_delete=models.DO_NOTHING,
     )
     ref_code = models.CharField(
-        verbose_name=_("Property Reference Code"),
+        verbose_name=_("New Project Reference Code"),
         max_length=255,
         unique=True,
         blank=True,
