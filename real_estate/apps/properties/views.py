@@ -1,3 +1,4 @@
+from hashlib import new
 import logging
 from html2text import re
 
@@ -347,5 +348,14 @@ def delete_new_project_api_view(request, slug):
         return Response(data=data)
 
 
-# @api_view(["POST"])
-# def 
+@api_view(["POST"])
+def uploadNewProjectImage(request):
+    data = request.data
+
+    new_project_id = data["new_project_id"]
+    new_project = NewProject.objects.get(id=new_project_id)
+    new_project.cover_photo = request.FILES.get("cover_photo")
+    new_project.photo1 = request.FILES.get("photo1")
+    new_project.photo1 = request.FILES.get("photo2")
+    new_project.save()
+    return Response("Image(s) uploaded")
