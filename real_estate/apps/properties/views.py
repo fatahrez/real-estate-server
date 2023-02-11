@@ -322,3 +322,30 @@ def create_new_project_api_view(request):
         return Response(serializer.errors, status=status.HTTP_4OO_BAD_REQUEST)
 
 
+@api_view(["DELETE"])
+@permission_classes([permissions.IsAuthenticated])
+def delete_new_project_api_view(request, slug):
+    try:
+        new_project = NewProject.objects.get(slug=slug)
+    except NewProject.DoesNotExist:
+        raise NewProjectNotFound
+    
+    user = request.user
+    if new_project.user != user:
+        return Response(
+            {"error": "You can't delete a project that doesn't belong to you"},
+            status=status.HTTP_403_FORBIDDEN
+        )
+    
+    if request.method == "DELETE":
+        delete_operation = new_project.delete()
+        data = {}
+        if delete_operation:
+            data["success"] = "Deletion was successful"
+        else:
+            data["failure"] = "Deletion failed"
+        return Response(data=data)
+
+
+# @api_view(["POST"])
+# def 
