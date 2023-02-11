@@ -1,8 +1,10 @@
+from dataclasses import fields
+from unicodedata import name
 from django_countries.serializer_fields import CountryField
 from django_countries.serializers import CountryFieldMixin
 from rest_framework import serializers
 
-from .models import Property, PropertyViews
+from .models import Property, PropertyViews, NewProject, NewProjectViews
 
 
 class PropertySerializer(serializers.ModelSerializer):
@@ -79,4 +81,65 @@ class PropertyCreateSerializer(serializers.ModelSerializer):
 class PropertyViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyViews
+        exclude = ["updated_at"]
+
+
+class NewProjectSerializer(serializers.ModelSerializer):
+    country = CountryField(name_only=True)
+    cover_photo = serializers.SerializerMethodField()
+    profile_photo = serializers.SerializerMethodField()
+    photo1 = serializers.SerializerMethodField()
+    photo2 = serializers.SerializerMethodField()
+
+    class Meta:
+        model = NewProject
+        fields = [
+            "id",
+            "user",
+            "profile_photo",
+            "name",
+            "slug",
+            "location",
+            "ref_code",
+            "description",
+            "country",
+            "city",
+            "price",
+            "square_feet",
+            "bedrooms",
+            "bathrooms",
+            "property_type",
+            "construction_status",
+            "completion_date",
+            "cover_photo",
+            "photo1",
+            "photo2",
+            "published_status",
+            "views"
+        ]
+
+    def get_cover_photo(self, obj):
+        return obj.cover_photo.url
+    
+    def get_photo1(self, obj):
+        return obj.photo1.url
+    
+    def get_photo2(self, obj):
+        return obj.photo2.url
+    
+    def get_profile_photo(self, obj):
+        return obj.user.profile.profile_photo.url
+
+
+class NewProjectCreateSerializer(serializers.ModelSerializer):
+    country = CountryField(name_only=True)
+
+    class Meta:
+        model = NewProject
+        exclude = ["updated_at"]
+
+
+class NewProjectViewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = NewProjectViews
         exclude = ["updated_at"]

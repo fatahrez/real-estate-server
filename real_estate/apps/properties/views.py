@@ -7,11 +7,12 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .exceptions import PropertyNotFound
-from .models import Property, PropertyViews
+from .exceptions import PropertyNotFound, NewProjectNotFound
+from .models import NewProject, NewProjectViews, Property, PropertyViews
 from .pagination import PropertyPagination
 from .serializers import (PropertyCreateSerializer, PropertySerializer,
-                          PropertyViewSerializer)
+                          PropertyViewSerializer, NewProjectSerializer, 
+                          NewProjectCreateSerializer, NewProjectViewSerializer)
 
 logger = logging.getLogger(__name__)
 
@@ -245,3 +246,112 @@ class PropertySearchAPIView(APIView):
         serializer = PropertySerializer(queryset, many=True)
 
         return Response(serializer.data)
+
+
+class ListAllNewProjectsAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = NewProjectSerializer
+    queryset = NewProject.objects.all().order_by("-created_at")
+
+
+class NewProjectViewsAPIView(generics.ListAPIView):
+    serializer_class = NewProjectViewSerializer
+    queryset = NewProjectViews.objects.all()
+
+
+class NewProjectDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    def get(self, request, slug):
+        new_project = NewProject.objects.get(slug=slug)
+
+        x_forwaded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if x_forwaded_for:
+            ip = x_forwaded_for.split(",")[0]
+        else:
+            ip = request.META.get("REMOTE_ADDR")
+        
+        if not NewProjectViews.objects.filter(new_project=new_project, ip=ip).exists():
+            NewProjectViews.objects.create(new_project=new_project, ip=ip)
+
+            new_project.views += 1
+            new_project.save()
+
+        serializer = NewProjectSerializer(new_project, context={"request": request})
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+@api_view(["PUT"])
+@permission_classes([permissions.IsAuthenticated])
+def update_new_project_api_view(request, slug):
+    try:
+        new_project = NewProject.objects.get(slug=slug)
+    except NewProject.DoesNotExist:
+        raise NewProjectNotFound
+    
+    user = request.user
+    if new_project.user != user:
+        return Response(
+            {"error": "You can't update or edit a project that doesn't belong to you"},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+    if request.method == "PUT":
+        data = request.data
+        serializer = NewProjectSerializer(new_project, data, many=False)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
+
+
+@api_view(["POST"])
+@permission_classes([permissions.IsAuthenticated])
+def create_new_project_api_view(request):
+    user = request.user
+    data = request.data
+    data["user"] = request.user.id
+    serializer = NewProjectCreateSerializer(data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+        logger.info(
+            f"new project {serializer.data.get('name')} created by {user.username}"
+        )
+        return Response(serializer.errors, status=status.HTTP_4OO_BAD_REQUEST)
+
+
+@api_view(["DELETE"])
+@permission_classes([permissions.IsAuthenticated])
+def delete_new_project_api_view(request, slug):
+    try:
+        new_project = NewProject.objects.get(slug=slug)
+    except NewProject.DoesNotExist:
+        raise NewProjectNotFound
+    
+    user = request.user
+    if new_project.user != user:
+        return Response(
+            {"error": "You can't delete a project that doesn't belong to you"},
+            status=status.HTTP_403_FORBIDDEN
+        )
+    
+    if request.method == "DELETE":
+        delete_operation = new_project.delete()
+        data = {}
+        if delete_operation:
+            data["success"] = "Deletion was successful"
+        else:
+            data["failure"] = "Deletion failed"
+        return Response(data=data)
+
+
+@api_view(["POST"])
+def uploadNewProjectImage(request):
+    data = request.data
+
+    new_project_id = data["new_project_id"]
+    new_project = NewProject.objects.get(id=new_project_id)
+    new_project.cover_photo = request.FILES.get("cover_photo")
+    new_project.photo1 = request.FILES.get("photo1")
+    new_project.photo1 = request.FILES.get("photo2")
+    new_project.save()
+    return Response("Image(s) uploaded")
