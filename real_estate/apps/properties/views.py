@@ -1,4 +1,5 @@
 import logging
+from html2text import re
 
 from html5lib import serialize
 
@@ -303,3 +304,21 @@ def update_new_project_api_view(request, slug):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
+
+@api_view(["POST"])
+@permission_classes([permissions.IsAuthenticated])
+def create_new_project_api_view(request):
+    user = request.user
+    data = request.data
+    data["user"] = request.user.id
+    serializer = NewProjectCreateSerializer(data=data)
+
+    if serializer.is_valid():
+        serializer.save()
+        logger.info(
+            f"new project {serializer.data.get('name')} created by {user.username}"
+        )
+        return Response(serializer.errors, status=status.HTTP_4OO_BAD_REQUEST)
+
+
