@@ -1,5 +1,7 @@
 import logging
 
+from html5lib import serialize
+
 import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, generics, permissions, status
@@ -8,10 +10,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .exceptions import PropertyNotFound
-from .models import Property, PropertyViews
+from .models import NewProject, NewProjectViews, Property, PropertyViews
 from .pagination import PropertyPagination
 from .serializers import (PropertyCreateSerializer, PropertySerializer,
-                          PropertyViewSerializer)
+                          PropertyViewSerializer, NewProjectSerializer, 
+                          NewProjectCreateSerializer, NewProjectViewSerializer)
 
 logger = logging.getLogger(__name__)
 
@@ -245,3 +248,38 @@ class PropertySearchAPIView(APIView):
         serializer = PropertySerializer(queryset, many=True)
 
         return Response(serializer.data)
+
+
+class ListAllNewProjectsAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    serializer_class = NewProjectSerializer
+    queryset = NewProject.objects.all().order_by("-created_at")
+
+
+class NewProjectViewsAPIView(generics.ListAPIView):
+    serializer_class = NewProjectViewSerializer
+    queryset = NewProjectViews.objects.all()
+
+
+class NewProjectDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    def get(self, request, slug):
+        new_project = NewProject.objects.get(slug=slug)
+
+        x_forwaded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if x_forwaded_for:
+            ip = x_forwaded_for.split(",")[0]
+        else:
+            ip = request.META.get("REMOTE_ADDR")
+        
+        if not NewProjectViews.objects.filter(new_project=new_project, ip=ip).exists():
+            NewProjectViews.objects.create(new_project=new_project, ip=ip)
+
+            new_project.views += 1
+            new_project.save()
+
+        serializer = NewProjectSerializer(new_project, context={"request": request})
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
