@@ -148,7 +148,7 @@ class NewProject(CommonFieldsMixin):
     
 
     name = models.CharField(max_length=255)
-    slug = AutoSlugField(populate_from="title", unique=True, always_update=True)
+    slug = AutoSlugField(populate_from="name", unique=True, always_update=True)
     location = models.CharField(max_length=255)
     user = models.ForeignKey(
         User,
@@ -212,7 +212,7 @@ class NewProjectViews(CommonFieldsMixin):
 
     def __str__(self):
         return (
-            f"Total views on - {self.new_project.title} is - {self.new_project.views} view(s)"
+            f"Total views on - {self.new_project.name} is - {self.new_project.views} view(s)"
         )
 
     class Meta:

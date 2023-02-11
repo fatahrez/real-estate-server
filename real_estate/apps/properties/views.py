@@ -1,8 +1,4 @@
-from hashlib import new
 import logging
-from html2text import re
-
-from html5lib import serialize
 
 import django_filters
 from django_filters.rest_framework import DjangoFilterBackend
