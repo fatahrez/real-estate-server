@@ -9,7 +9,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .exceptions import PropertyNotFound
+from .exceptions import PropertyNotFound, NewProjectNotFound
 from .models import NewProject, NewProjectViews, Property, PropertyViews
 from .pagination import PropertyPagination
 from .serializers import (PropertyCreateSerializer, PropertySerializer,
@@ -283,3 +283,23 @@ class NewProjectDetailView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+@api_view(["PUT"])
+@permission_classes([permissions.IsAuthenticated])
+def update_property_api_view(request, slug):
+    try:
+        new_project = NewProject.objects.get(slug=slug)
+    except NewProject.DoesNotExist:
+        raise NewProjectNotFound
+    
+    user = request.user
+    if new_project.user != user:
+        return Response(
+            {"error": "You can't update or edit a project that doesn't belong to you"},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+    if request.method == "PUT":
+        data = request.data
+        serializer = NewProjectSerializer(new_project, data, many=False)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data)
