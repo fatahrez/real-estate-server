@@ -285,7 +285,7 @@ class NewProjectDetailView(APIView):
 
 @api_view(["PUT"])
 @permission_classes([permissions.IsAuthenticated])
-def update_property_api_view(request, slug):
+def update_new_project_api_view(request, slug):
     try:
         new_project = NewProject.objects.get(slug=slug)
     except NewProject.DoesNotExist:
