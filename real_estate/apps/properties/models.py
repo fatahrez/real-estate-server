@@ -138,14 +138,42 @@ class PropertyViews(CommonFieldsMixin):
         verbose_name_plural = "Total Property Views"
 
 class NewProject(CommonFieldsMixin):
+
+    class PropertyType(models.TextChoices):
+        HOUSE = "House", _("House")
+        APARTMENT = "Apartment", _("Apartment")
+        OFFICE = "Office", _("Office")
+        COMMERCIAL = "Commercial", _("Commercial")
+        OTHER = "Other", _("Other")
+    
+
     name = models.CharField(max_length=255)
+    slug = AutoSlugField(populate_from="title", unique=True, always_update=True)
     location = models.CharField(max_length=255)
+    user = models.ForeignKey(
+        User,
+        verbose_name=_("Agent, Seller, Buyer or Project Builder"),
+        related_name="agent_buyer",
+        on_delete=models.DO_NOTHING,
+    )
+    ref_code = models.CharField(
+        verbose_name=_("Property Reference Code"),
+        max_length=255,
+        unique=True,
+        blank=True,
+    )
     description = models.TextField()
     price = models.DecimalField(max_digits=12, decimal_places=2)
     bedrooms = models.PositiveIntegerField()
     bathrooms = models.PositiveIntegerField()
     square_feet = models.PositiveIntegerField()
     is_published = models.BooleanField(default=True)
+    country = CountryField(
+        verbose_name=_("Country"),
+        default="KE",
+        blank_label="(select country)",
+    )
+    city = models.CharField(verbose_name=_("City"), max_length=180, default="Nairobi")
     construction_status = models.CharField(
         max_length=255,
         choices=(
@@ -156,9 +184,37 @@ class NewProject(CommonFieldsMixin):
         default='Not Started'
     )
     completion_date = models.DateField(null=True, blank=True)
+    property_type = models.CharField(
+        verbose_name=_("Property Type"),
+        max_length=50,
+        choices=PropertyType.choices,
+        default=PropertyType.OTHER,
+    )
+    cover_photo = models.ImageField(
+        verbose_name=_("Main Photo"), default="/house_sample.jpg", null=True, blank=True
+    )
+    photo1 = models.ImageField(default="/interior_sample.jpg", null=True, blank=True)
+    photo2 = models.ImageField(default="/interior_sample.jpg", null=True, blank=True)
+    views = models.IntegerField(verbose_name=_("Total Views"), default=0)
+
     
     objects = models.Manager()
     published = PropertyPublishedManager()
 
     def __str__(self):
         return self.name
+
+class NewProjectViews(CommonFieldsMixin):
+    ip = models.CharField(verbose_name=_("IP Address"), max_length=250)
+    new_project = models.ForeignKey(
+        NewProject, related_name="new_project_views", on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return (
+            f"Total views on - {self.new_project.title} is - {self.new_project.views} view(s)"
+        )
+
+    class Meta:
+        verbose_name = "Total Views on New Project"
+        verbose_name_plural = "Total New Project Views"
