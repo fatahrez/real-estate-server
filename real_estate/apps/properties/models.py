@@ -21,7 +21,6 @@ class PropertyPublishedManager(models.Manager):
             .filter(published_status=True)
         )
 
-
 class Property(CommonFieldsMixin):
     class AdvertType(models.TextChoices):
         FOR_SALE = "For Sale", _("For Sale")
@@ -189,6 +188,9 @@ class NewProject(CommonFieldsMixin):
         max_length=50,
         choices=PropertyType.choices,
         default=PropertyType.OTHER,
+    )
+    published_status = models.BooleanField(
+        verbose_name=_("Published Status"), default=False
     )
     cover_photo = models.ImageField(
         verbose_name=_("Main Photo"), default="/house_sample.jpg", null=True, blank=True
