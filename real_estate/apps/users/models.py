@@ -41,8 +41,17 @@ class User(AbstractUser, CommonFieldsMixin):
     REQUIRED_FIELDS = ["username"]
 
     def tokens(self):
+    
         refresh = RefreshToken.for_user(self)
-        return {"refresh": str(refresh), "access": str(refresh.access_token)}
+        token = refresh.access_token
+        token["role"] = self.type
+        token["username"] = self.username
+        return {
+            "refresh": str(refresh), 
+            "access": str(token),
+            "role": str(self.type),
+            "username": str(self.username)
+        }
 
 
 """ ========================= Proxy Model Managers =================== """
@@ -65,9 +74,7 @@ class AgentManager(models.Manager):
 
 class ProjectBuilderManager(models.Manager):
     def get_queryset(self, *args, **kwargs):
-        return (
-            super().get_queryset(*args, **kwargs).filter(type=User.Types.PROJECTBUILDER)
-        )
+        return super().get_queryset(*args, **kwargs).filter(type=User.Types.PROJECTBUILDER)
 
 
 class StaffManager(models.Manager):
