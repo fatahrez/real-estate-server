@@ -16,6 +16,11 @@ urlpatterns = [
     ),
     path("properties/create/", views.create_property_api_view, name="property-create"),
     path(
+        "propertylisting/create/", 
+        views.create_property_listing_api_view,
+        name="property-listing-create"
+    ),
+    path(
         "properties/details/<slug:slug>/",
         views.PropertyDetailView.as_view(),
         name="property-details",

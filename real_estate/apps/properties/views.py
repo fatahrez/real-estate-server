@@ -10,7 +10,7 @@ from rest_framework.views import APIView
 from .exceptions import PropertyNotFound, NewProjectNotFound
 from .models import NewProject, NewProjectViews, Property, PropertyViews
 from .pagination import PropertyPagination
-from .serializers import (PropertyCreateSerializer, PropertySerializer,
+from .serializers import (PropertyCreateSerializer, PropertyListingCreateSerializer, PropertySerializer,
                           PropertyViewSerializer, NewProjectSerializer, 
                           NewProjectCreateSerializer, NewProjectViewSerializer)
 
@@ -136,7 +136,32 @@ def create_property_api_view(request):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(["POST"])
+@permission_classes([permissions.IsAuthenticated])
+def create_property_listing_api_view(request):
+    user = request.user
+    request.data._mutable = True
+    data = request.data
+    data["agent"] = request.user.id
+    slug = data["property"]
 
+    property = Property.published.get(slug=slug)
+    property.is_published = True
+    property.save()
+
+    data["property"] = property.id
+    request.data._mutable = False
+    serializer = PropertyListingCreateSerializer(data=data)
+    if serializer.is_valid():
+        serializer.save()
+        logger.info(
+            f"property listing serializer {serializer.data.get('title')} created by {user.username}"
+        )
+        return Response(serializer.data)
+
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
 @api_view(["DELETE"])
 @permission_classes([permissions.IsAuthenticated])
 def delete_property_api_view(request, slug):

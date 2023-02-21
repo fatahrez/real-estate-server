@@ -1,3 +1,4 @@
+from operator import mod
 import random
 import string
 
@@ -9,6 +10,7 @@ from django.utils.translation import gettext_lazy as _
 from django_countries.fields import CountryField
 
 from real_estate.apps.common.models import CommonFieldsMixin
+from real_estate.apps.users.models import Agent, Seller
 
 User = get_user_model()
 
@@ -18,7 +20,7 @@ class PropertyPublishedManager(models.Manager):
         return (
             super(PropertyPublishedManager, self)
             .get_queryset()
-            .filter(deleted=False, published_status=True, is_active=True)
+            .filter(deleted=False, is_active=True)
         )
 
 class Property(CommonFieldsMixin):
@@ -136,6 +138,14 @@ class PropertyViews(CommonFieldsMixin):
         verbose_name = "Total Views on Property"
         verbose_name_plural = "Total Property Views"
 
+class PropertyListing(CommonFieldsMixin):
+    property = models.ForeignKey(Property, on_delete=models.CASCADE)
+    agent = models.ForeignKey(Agent, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f"{self.property} - {self.agent}"
+
+        
 class NewProject(CommonFieldsMixin):
 
     class PropertyType(models.TextChoices):
