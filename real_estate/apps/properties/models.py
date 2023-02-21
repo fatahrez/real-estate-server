@@ -18,7 +18,7 @@ class PropertyPublishedManager(models.Manager):
         return (
             super(PropertyPublishedManager, self)
             .get_queryset()
-            .filter(published_status=True)
+            .filter(deleted=False, published_status=True, is_active=True)
         )
 
 class Property(CommonFieldsMixin):
@@ -124,7 +124,7 @@ class Property(CommonFieldsMixin):
 class PropertyViews(CommonFieldsMixin):
     ip = models.CharField(verbose_name=_("IP Address"), max_length=250)
     property = models.ForeignKey(
-        Property, related_name="property_views", on_delete=models.CASCADE
+        Property, related_name="Property", on_delete=models.CASCADE
     )
 
     def __str__(self):
@@ -217,7 +217,7 @@ class NewProject(CommonFieldsMixin):
 class NewProjectViews(CommonFieldsMixin):
     ip = models.CharField(verbose_name=_("IP Address"), max_length=250)
     new_project = models.ForeignKey(
-        NewProject, related_name="new_project_views", on_delete=models.CASCADE
+        NewProject, related_name="NewProject", on_delete=models.CASCADE
     )
 
     def __str__(self):

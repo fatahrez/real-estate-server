@@ -39,7 +39,7 @@ class PropertyFilter(django_filters.FilterSet):
 class ListAllPropertiesAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = PropertySerializer
-    queryset = Property.objects.all().order_by("-created_at")
+    queryset = Property.published.all().order_by("-created_at")
     pagination_class = PropertyPagination
     filter_backends = [
         DjangoFilterBackend,
@@ -66,7 +66,7 @@ class ListAgentsPropertiesAPIView(generics.ListAPIView):
 
     def get_queryset(self):
         user = self.request.user
-        queryset = Property.objects.filter(user=user).order_by("-created_at")
+        queryset = Property.published.filter(user=user).order_by("-created_at")
         return queryset
 
 
