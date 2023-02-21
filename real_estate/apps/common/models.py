@@ -31,10 +31,11 @@ class CommonFieldsMixin(models.Model):
     objects = CustomManager()
 
     def delete(self, *args, **kwargs):
-        self.delete = True
+        self.deleted = True
         self.is_active = False
         self.save()
-
+        return self.deleted
+        
     class Meta:
         ordering = ["-updated_at", "-created_at"]
         abstract = True
