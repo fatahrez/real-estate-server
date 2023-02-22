@@ -16,6 +16,31 @@ urlpatterns = [
     ),
     path("properties/create/", views.create_property_api_view, name="property-create"),
     path(
+        "propertylisting/create/", 
+        views.create_property_listing_api_view,
+        name="property-listing-create"
+    ),
+    path(
+        "propertylisting/all/",
+        views.ListAllPropertyListingsApiView.as_view(),
+        name="all-property-listings"
+    ),
+    path(
+        "propertylisting/agents/all/",
+        views.ListAllPropertyListingAgentApiView.as_view(),
+        name="all-agent-property-listings"
+    ),
+    path(
+        "propertylisting/seller/all/",
+        views.ListAllPropertyListingSellerApiView.as_view(),
+        name="all-seller-property-listings"
+    ),
+    path(
+        "propertylisting/delete/<int:id>/",
+        views.delete_property_listing_api_view,
+        name="delete-property-listing"
+    ),
+    path(
         "properties/details/<slug:slug>/",
         views.PropertyDetailView.as_view(),
         name="property-details",
