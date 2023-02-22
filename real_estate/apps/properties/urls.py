@@ -21,6 +21,11 @@ urlpatterns = [
         name="property-listing-create"
     ),
     path(
+        "propertylisting/all/",
+        views.ListAllPropertyListingsApiView.as_view(),
+        name="all-property-listings"
+    ),
+    path(
         "properties/details/<slug:slug>/",
         views.PropertyDetailView.as_view(),
         name="property-details",

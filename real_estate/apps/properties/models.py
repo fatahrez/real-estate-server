@@ -141,6 +141,10 @@ class PropertyViews(CommonFieldsMixin):
 class PropertyListing(CommonFieldsMixin):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     agent = models.ForeignKey(Agent, on_delete=models.CASCADE)
+    
+    def save(self, *args, **kwargs):
+        self.is_active = True
+        super(PropertyListing, self).save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.property} - {self.agent}"

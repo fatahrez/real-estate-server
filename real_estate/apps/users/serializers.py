@@ -120,6 +120,11 @@ class UserSerializer(serializers.ModelSerializer):
 
         return instance
 
+class UserShortSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ("id", "email", "first_name", "username")
 
 class SocialAuthSerializer(serializers.Serializer):
     token = serializers.CharField(required=True, allow_blank=False)

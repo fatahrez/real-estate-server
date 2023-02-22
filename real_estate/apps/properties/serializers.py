@@ -1,4 +1,6 @@
+from pyexpat import model
 from django_countries.serializer_fields import CountryField
+from real_estate.apps.users.serializers import UserShortSerializer
 from rest_framework import serializers
 
 from .models import Property, PropertyListing, PropertyViews, NewProject, NewProjectViews
@@ -79,6 +81,18 @@ class PropertyViewSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyViews
         exclude = ["updated_at"]
+
+class PropertyListingSerializer(serializers.ModelSerializer):
+    agent = UserShortSerializer()
+    property = PropertySerializer()
+
+    class Meta:
+        model = PropertyListing
+        fields = [
+            "agent",
+            "property"
+        ]
+    
 
 class PropertyListingCreateSerializer(serializers.ModelSerializer):
     class Meta:
