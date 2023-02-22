@@ -141,6 +141,25 @@ class ListAllPropertyListingsApiView(generics.ListAPIView):
     serializer_class = PropertyListingSerializer
     queryset = PropertyListing.objects.all().order_by("-created_at")
 
+class ListAllPropertyListingAgentApiView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PropertyListingSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = PropertyListing.objects.filter(agent=user).order_by("-created_at")
+        return queryset
+
+
+class ListAllPropertyListingSellerApiView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = PropertyListingSerializer
+
+    def get_queryset(self):
+        user = self.request.user
+        queryset = PropertyListing.objects.filter(property__user=user).order_by("-created_at")
+        return queryset
+    
 
 @api_view(["POST"])
 @permission_classes([permissions.IsAuthenticated])
@@ -167,8 +186,32 @@ def create_property_listing_api_view(request):
 
     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-# @api
+
+@api_view(["DELETE"])
+@permission_classes([permissions.IsAuthenticated])
+def delete_property_listing_api_view(request, id):
+    try:
+        property_listing = PropertyListing.objects.get(id=id)
+    except PropertyListing.DoesNotExist:
+        raise PropertyNotFound
+
+    user = request.user
+    if property_listing.agent != user:
+        return Response(
+            {"error": "You can't delete a property listing that doesn't belong to you"},
+            status=status.HTTP_403_FORBIDDEN,
+        )
     
+    if request.method == "DELETE":
+        delete_operation = property_listing.delete()
+        data = {}
+        if delete_operation:
+            data["success"] = "Deletion was successful"
+        else:
+            data["failure"] = "Deletion failed"
+        return Response(data=data)
+
+
 @api_view(["DELETE"])
 @permission_classes([permissions.IsAuthenticated])
 def delete_property_api_view(request, slug):

@@ -89,6 +89,7 @@ class PropertyListingSerializer(serializers.ModelSerializer):
     class Meta:
         model = PropertyListing
         fields = [
+            "id",
             "agent",
             "property"
         ]
