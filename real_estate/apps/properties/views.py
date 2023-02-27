@@ -8,11 +8,12 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .exceptions import PropertyNotFound, NewProjectNotFound
-from .models import NewProject, NewProjectViews, Property, PropertyListing, PropertyViews
+from .models import NewProject, NewProjectViews, Property, PropertyListing, PropertyListingViews, PropertyViews
 from .pagination import PropertyPagination
 from .serializers import (PropertyCreateSerializer, PropertyListingCreateSerializer, PropertyListingSerializer, PropertySerializer,
                           PropertyViewSerializer, NewProjectSerializer, 
                           NewProjectCreateSerializer, NewProjectViewSerializer)
+from real_estate.apps.properties import serializers
 
 logger = logging.getLogger(__name__)
 
@@ -159,7 +160,29 @@ class ListAllPropertyListingSellerApiView(generics.ListAPIView):
         user = self.request.user
         queryset = PropertyListing.objects.filter(property__user=user).order_by("-created_at")
         return queryset
-    
+
+
+class PropertyListingDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    def get(self, request, id):
+        property_listing = PropertyListing.objects.get(id=id)
+
+        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
+        if x_forwarded_for:
+            ip = x_forwarded_for.split(",")[0]
+        else:
+            ip = request.META.get("REMOTE_ADDR")
+        
+        if not PropertyListingViews.objects.filter(property_listing=property_listing).exists():
+            PropertyListingViews.objects.create(property_listing=property_listing, ip=ip)
+
+            property_listing.views += 1
+            property_listing.save()
+        
+        serializer = PropertyListingSerializer(property_listing, context={"request": request})
+
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 @api_view(["POST"])
 @permission_classes([permissions.IsAuthenticated])

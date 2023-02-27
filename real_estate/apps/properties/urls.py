@@ -26,6 +26,11 @@ urlpatterns = [
         name="all-property-listings"
     ),
     path(
+        "propertylisting/details/<int:id>/",
+        views.PropertyListingDetailView.as_view(),
+        name="propery-listing-detail"
+    ),
+    path(
         "propertylisting/agents/all/",
         views.ListAllPropertyListingAgentApiView.as_view(),
         name="all-agent-property-listings"

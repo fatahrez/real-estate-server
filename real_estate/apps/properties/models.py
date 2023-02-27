@@ -1,6 +1,9 @@
 from operator import mod
 import random
 import string
+from tabnanny import verbose
+
+from django import views
 
 from autoslug import AutoSlugField
 from django.contrib.auth import get_user_model
@@ -141,7 +144,8 @@ class PropertyViews(CommonFieldsMixin):
 class PropertyListing(CommonFieldsMixin):
     property = models.ForeignKey(Property, on_delete=models.CASCADE)
     agent = models.ForeignKey(Agent, on_delete=models.CASCADE)
-    
+    views = models.IntegerField(verbose_name=_("Total Views"), default=0)
+
     def save(self, *args, **kwargs):
         self.is_active = True
         super(PropertyListing, self).save(*args, **kwargs)
@@ -149,7 +153,22 @@ class PropertyListing(CommonFieldsMixin):
     def __str__(self):
         return f"{self.property} - {self.agent}"
 
-        
+class PropertyListingViews(CommonFieldsMixin):
+    ip = models.CharField(verbose_name=_("IP Address"), max_length=250)
+    property_listing = models.ForeignKey(
+        PropertyListing, related_name="PropertyListing", on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return (
+            f"Total views on - {self.property_listing} is - {self.property_listing.views} view(s)"
+        )
+    
+    class Meta:
+        verbose_name = "Total Views on Property Listing"
+        verbose_name_plural = "Total Property Listing Views"
+
+
 class NewProject(CommonFieldsMixin):
 
     class PropertyType(models.TextChoices):

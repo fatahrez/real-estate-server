@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Property, PropertyViews, NewProject, NewProjectViews, PropertyListing
+from .models import Property, PropertyListingViews, PropertyViews, NewProject, NewProjectViews, PropertyListing
 
 
 class PropertyAdmin(admin.ModelAdmin):
@@ -17,3 +17,4 @@ admin.site.register(PropertyViews)
 admin.site.register(NewProject, NewProjectAdmin)
 admin.site.register(NewProjectViews)
 admin.site.register(PropertyListing)
+admin.site.register(PropertyListingViews)
