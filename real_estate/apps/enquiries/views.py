@@ -1,5 +1,6 @@
 from django.core.mail import send_mail
-from rest_framework import permissions
+from real_estate.apps.enquiries.serializers import EnquirySerializer
+from rest_framework import permissions, generics
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
 
@@ -7,6 +8,11 @@ from real_estate.config.settings.base import DEFAULT_FROM_EMAIL
 
 from .models import Enquiry
 
+
+class ListAllEnquiryAPIView(generics.ListAPIView):
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = EnquirySerializer
+    queryset = Enquiry.objects.all().order_by("-created_at")
 
 @api_view(["POST"])
 @permission_classes([permissions.AllowAny])
@@ -26,7 +32,7 @@ def send_enquiry_email(request):
         enquiry = Enquiry(name=name, email=email, subject=subject, message=message)
         enquiry.save()
 
-        return Response({"success": "Your Enquiry was successfully submitted"})
+        return Response({"data": data, "success": "Your Enquiry was successfully submitted"})
 
     except:
         return Response({"fail": "Enquiry was not sent. Please try again"})
