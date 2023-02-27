@@ -159,7 +159,10 @@ class ListAllPropertyListingSellerApiView(generics.ListAPIView):
         user = self.request.user
         queryset = PropertyListing.objects.filter(property__user=user).order_by("-created_at")
         return queryset
-    
+
+
+
+
 
 @api_view(["POST"])
 @permission_classes([permissions.IsAuthenticated])
