@@ -41,7 +41,6 @@ class ListAllPropertiesAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     serializer_class = PropertySerializer
     queryset = Property.published.all().order_by("-created_at")
-    pagination_class = PropertyPagination
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter,
@@ -55,7 +54,6 @@ class ListAllPropertiesAPIView(generics.ListAPIView):
 
 class ListAgentsPropertiesAPIView(generics.ListAPIView):
     serializer_class = PropertySerializer
-    pagination_class = PropertyPagination
     filter_backends = [
         DjangoFilterBackend,
         filters.SearchFilter,
