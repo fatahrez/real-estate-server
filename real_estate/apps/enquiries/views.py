@@ -1,8 +1,9 @@
 from django.core.mail import send_mail
 from real_estate.apps.enquiries.serializers import EnquirySerializer
-from rest_framework import permissions, generics
+from rest_framework import permissions, generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from real_estate.config.settings.base import DEFAULT_FROM_EMAIL
 
@@ -13,6 +14,14 @@ class ListAllEnquiryAPIView(generics.ListAPIView):
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = EnquirySerializer
     queryset = Enquiry.objects.all().order_by("-created_at")
+
+
+class EnquiryDetailView(APIView):
+    permission_classes = [permissions.IsAuthenticated]
+    def get(self, request, id):
+        enquiry = Enquiry.objects.get(id=id)
+        serializer = EnquirySerializer(enquiry)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
 @permission_classes([permissions.AllowAny])
