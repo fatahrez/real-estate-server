@@ -403,8 +403,13 @@ def update_new_project_api_view(request, slug):
 @permission_classes([permissions.IsAuthenticated])
 def create_new_project_api_view(request):
     user = request.user
+    request.data._mutable = True
+
     data = request.data
     data["user"] = request.user.id
+
+    request.data._mutable = False
+    
     serializer = NewProjectCreateSerializer(data=data)
 
     if serializer.is_valid():
@@ -412,7 +417,9 @@ def create_new_project_api_view(request):
         logger.info(
             f"new project {serializer.data.get('name')} created by {user.username}"
         )
-        return Response(serializer.errors, status=status.HTTP_4OO_BAD_REQUEST)
+        return Response(serializer.data)
+    
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["DELETE"])

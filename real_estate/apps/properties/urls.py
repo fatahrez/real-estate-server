@@ -71,6 +71,11 @@ urlpatterns = [
         name="all-new-projects"
     ),
     path(
+        "properties/new_projects/create/",
+        views.create_new_project_api_view,
+        name="create-new-project"
+    ),
+    path(
         "properties/new_projects/details/<slug:slug>/",
         views.NewProjectDetailView.as_view(),
         name="new-project-details"
