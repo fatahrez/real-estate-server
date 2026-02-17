@@ -28,7 +28,7 @@ schema_view = get_schema_view(
         description="Real Estate API for iOS and android app",
         terms_of_service="https://www.google.com/policies/terms/",
         contact=openapi.Contact(email="fertahrez@gmail.com"),
-        license=openapi.License(name="Apache License"),
+        license=openapi.License(name="Apache License")
     ),
     public=True,
     permission_classes=(permissions.AllowAny,),

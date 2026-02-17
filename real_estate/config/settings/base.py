@@ -240,3 +240,16 @@ logging.config.dictConfig(
         },
     }
 )
+
+SWAGGER_SETTINGS = {
+    'SECURITY_DEFINITIONS': {
+        'Bearer': {
+            'type': 'apiKey',
+            'name': 'Authorization',
+            'in': 'header'
+        }
+    },
+    # Optional: set PERSIST_AUTH to True to keep the authorization
+    # token in the UI after a page refresh.
+    'PERSIST_AUTH': True, 
+}
